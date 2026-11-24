@@ -105,6 +105,8 @@ The main output is `AI1Emu.nro`. Companion NROs are generated under `build/switc
 
 A prior v0.4.0 build and nine native host checks passed. Repository preparation has not recompiled the app or verified every system on hardware. No overclocking is configured.
 
+Game and console testing follows the [benchmark reporting guide](docs/BENCHMARKING.md). Standardized hardware measurements have not been published yet. Reports identify the build, device, settings and measurement method.
+
 ## Credits and licensing
 
 AI1-owned frontend and integration code uses the scoped MIT terms in [LICENSE](LICENSE). Emulator cores and third-party components retain their own terms. The full collection is not uniformly MIT licensed. Snes9x and Genesis Plus GX include noncommercial restrictions. Preserve upstream notices and review applicable terms before redistributing a package. Branding and third-party metadata have separate terms.
