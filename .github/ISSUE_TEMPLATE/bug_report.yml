@@ -1,0 +1,34 @@
+name: Bug report
+description: Report an app, emulator, or artwork problem.
+title: "[Bug] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: AI1 Emu version
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Test environment
+      options:
+        - Original Nintendo Switch
+        - Nintendo Switch Lite
+        - Other Switch model
+        - Windows UI preview
+        - Windows artwork tool
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened and how to reproduce it
+      description: Include launch method, core, game region/revision, expected behavior and actual result.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and screenshots
+      description: Remove personal information. Do not attach ROMs, firmware or keys.

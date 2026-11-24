@@ -1,0 +1,13 @@
+AI1 Emu multi-console release identification databases
+Sources: https://github.com/libretro/libretro-database/tree/master/metadat/no-intro
+See tools/databases/sources.json in the corresponding-source archive for DAT paths.
+Retrieved November 3, 2026.
+Attribution: libretro-database and upstream No-Intro metadata contributors.
+License: Creative Commons Attribution-ShareAlike 4.0 International.
+Full license: libretro-database-LICENSE.txt
+Changes: reduced to SHA-1, CRC32, cartridge serial and release-title TSV records
+by tools/build-multi-database.cjs. Derived TSVs retain CC-BY-SA-4.0.
+Platforms: GBA, GB, GBC, NES, SNES, Genesis, Master System, Game Gear, DS, DSi.
+No ROMs, commercial artwork or screenshots are in these metadata tables.
+
+Nintendo 64: libretro/libretro-database metadat/no-intro/Nintendo - Nintendo 64.dat, retrieved 2026-11-03; 2268 releases. Commercial artwork is not bundled.

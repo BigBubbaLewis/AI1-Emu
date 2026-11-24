@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+<rect width="1280" height="320" rx="28" fill="#100d30"/>
+<path d="M0 28Q0 0 28 0H1252Q1280 0 1280 28V105H0Z" fill="#2018ca"/>
+<circle cx="86" cy="52" r="22" fill="#ed35a2"/><circle cx="109" cy="52" r="22" fill="#d5ef37" fill-opacity=".9"/><circle cx="98" cy="70" r="22" fill="#6b63e8" fill-opacity=".9"/>
+<text x="145" y="77" fill="white" font-family="Segoe UI,Arial,sans-serif" font-weight="800" font-size="58">AI1 <tspan fill="#e3fa3d">Emu</tspan></text>
+<text x="60" y="191" fill="white" font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="44">Your retro library. One place to play.</text>
+<text x="62" y="241" fill="#aaa6c7" font-family="Segoe UI,Arial,sans-serif" font-size="23">ALL IN 1 EMULATOR · NINTENDO SWITCH HOMEBREW</text>
+<rect x="62" y="275" width="72" height="6" rx="3" fill="#e3fa3d"/><rect x="144" y="275" width="72" height="6" rx="3" fill="#ed35a2"/><rect x="226" y="275" width="72" height="6" rx="3" fill="#ff8514"/>
+</svg>
