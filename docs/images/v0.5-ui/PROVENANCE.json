@@ -1,0 +1,104 @@
+[
+  {
+    "File": "01-home.png",
+    "SHA256": "fb6b6b6a3f532b221d35e46e186463e8c9c5036cff9ad400b0ad6757e3fdc92a",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "02-home-shelf.png",
+    "SHA256": "62ce20600da2abba23e23e1d211ac828e7d5cf3dd83d2ae58e536f12bafba95d",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "03-library.png",
+    "SHA256": "79232c62ac0bab2327f12f7a225767d4f0dd774c9a946d86ad951d599d7f8ed5",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "04-settings-gameplay.png",
+    "SHA256": "186288e92b5cb620648e0fbdb0784ac4a12d0012eaf117d3c851173b1b068772",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "05-settings-themes.png",
+    "SHA256": "837777eb7d51782f61cd687b89bbaa42d67f2aabd00cb1eaf65837a6eaf0d341",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "06-settings-controls.png",
+    "SHA256": "e77bf7fcdd7245d4ff396a1c248746fbd39270d15b6ca214f08c1f29ff071ac9",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "07-settings-updates.png",
+    "SHA256": "d60070aad2abddd378e0e9c6c85696880d9dae087c3a41a6756dd659ccfa95b4",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "08-settings-map.png",
+    "SHA256": "5ebac63a9c89712387047cdc5ae60f5f6a946338c18757f704fc84ac623a607d",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "09-settings-about.png",
+    "SHA256": "bb7ac91b2fde122c37de0d267a6bec8e960cdf004d7326f75cf32af8694cc024",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "10-home-black.png",
+    "SHA256": "d24829b8b71040e2e6dd0be6aa14a09ace0b0f47816e8c7930f6a8ef81636e6a",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "11-menu-resume.png",
+    "SHA256": "638f997c42ce9e23931e33fdff9e00db4dfe1b91c5ad57780e3de8c234648f6e",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "12-menu-save.png",
+    "SHA256": "687a8a61877c236cba5b923d04762d72bd404f6a43825e0b625370b20c3a3b21",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "13-menu-speed.png",
+    "SHA256": "ad2201470910fe06f55cdf3bc391c172824d26293786b21eda9c1c75362bb425",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "14-menu-cheats.png",
+    "SHA256": "2cbff159cdfd3bc8bd83c37e43566f631243a55e384fa2ee807ffe7a7e2dad23",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "15-menu-display.png",
+    "SHA256": "e86ccc02d18c6d247d36e204ba79b0468d239d1ba878206d2a24092d9e1ac356",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "16-menu-load.png",
+    "SHA256": "3cb377dd0317df9dcedf662307846a844b1fef638a3876725c82f7e2189f2db2",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  },
+  {
+    "File": "17-game-overlay.png",
+    "SHA256": "166f41b6b559675a467c2db10bc32ff946eb10885fcd1e111ca080458c84c20d",
+    "Origin": "Actual frozen v0.5.0 shared SDL2 renderer; desktop preview with mock cores and demo entries",
+    "PublicGameplayEvidence": false
+  }
+]
