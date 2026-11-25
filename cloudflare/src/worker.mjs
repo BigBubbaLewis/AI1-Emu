@@ -5,10 +5,10 @@ export async function handle(request,env,ctx){
  if(decoded.split('/').some(p=>p.startsWith('.')||/^(?:prod|title)\.keys$/i.test(p)))return new Response('Not found',{status:404});
  if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405,headers:{Allow:'GET, HEAD'}});
  if(url.pathname==='/health')return Response.json({service:'AI1 Emu updates',status:'ok'});
- const component=/^\/releases\/\d+\.\d+\.\d+\/cores\/(?:mupen64plus-next|melonds)\.nro$/.test(url.pathname);
+ const component=/^\/releases\/\d+\.\d+\.\d+\/cores\/(?:mupen64plus-next|melonds|fceumm|snes9x|genesis-plus-gx|dekopon)\.nro$/.test(url.pathname);
  const download=component||/^\/(?:source|releases)\/\d+\.\d+\.\d+\/[A-Za-z0-9._-]+\.(?:zip|tar\.gz)$/.test(url.pathname);
  const source=/^\/source\/\d+\.\d+\.\d+\/files\/[A-Za-z0-9_./+-]+$/.test(url.pathname);
- const page=['/','/developer/','/developer/index.html','/developer/catalog.json','/developer/app.mjs','/logo.png','/latest-multicore.json','/n64.json','/ds.json','/preview.json'].includes(url.pathname);
+ const page=['/','/developer/','/developer/index.html','/developer/catalog.json','/developer/app.mjs','/logo.png','/latest-multicore.json','/n64.json','/ds.json','/preview.json','/cores.txt'].includes(url.pathname);
  const tool=/^\/tools\/\d+\.\d+\.\d+\/[A-Za-z0-9._-]+\.(?:cmd|txt)$/.test(url.pathname);
  if(!page&&!source&&!download&&!tool&&url.pathname!=='/latest.json'&&url.pathname!=='/NOTICE.txt'&&!/^\/releases\/\d+\.\d+\.\d+\/AI1Emu\.nro$/.test(url.pathname)&&!/^\/source\/mgba-[a-z0-9.-]+\.zip$/.test(url.pathname)&&!/^\/source\/[A-Za-z0-9._-]+\.txt$/.test(url.pathname))return new Response('Not found',{status:404});
  try{
