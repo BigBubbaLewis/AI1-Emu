@@ -74,5 +74,6 @@ means nobody has checked it on a Switch yet.
 ## Not yet checked on a Switch
 
 Save-state round trips on every console, N64 gameplay, the 5-hour update check during a
-long session, and the 3DS performance boost through the AI1 Emu setting (rather than the
-sys-clk overlay) are untested.
+long session are untested. The 3DS performance boost through the AI1 Emu setting was
+reported working on 2026-11-25 (the sys-clk overlay showed the profile in game); its
+effect on speed is not yet measured in a controlled run.
