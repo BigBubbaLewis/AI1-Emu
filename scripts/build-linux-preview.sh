@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Optional: build the real UI preview on Linux without a window and capture every
-# v0.4 screen. Uses the bundled SDL2 2.28.5 with only the offscreen/dummy drivers.
+# v0.5 screen. Uses the bundled SDL2 2.28.5 with only the offscreen/dummy drivers.
 # Put sample files in build/linux-preview/run/data/roms/<console>/ (or set
 # AI1EMU_PREVIEW_ROOT) to preview a populated library.
 set -euo pipefail
@@ -16,7 +16,7 @@ if [ ! -f "$out/sdl2/lib/libSDL2.a" ]; then
     && make -j"$(nproc)" >/dev/null && make install >/dev/null)
 fi
 g++ -std=c++17 -O2 -DRETROVERSE_WINDOWS_PREVIEW -I"$out/sdl2/include/SDL2" \
-  source/windows_preview.cpp source/library_ui.cpp source/library_touch.cpp source/game_database.cpp source/platform_library.cpp \
-  "$out/sdl2/lib/libSDL2.a" -lm -lpthread -ldl -o "$out/AI1Emu-Preview"
+  source/windows_preview.cpp source/library_ui.cpp source/ui_kit.cpp source/app_data.cpp source/game_session.cpp source/game_database.cpp source/platform_library.cpp \
+  "$out/sdl2/lib/libSDL2.a" -lz -lm -lpthread -ldl -o "$out/AI1Emu-Preview"
 mkdir -p "$out/run/data/roms" && rm -rf "$out/run/romfs" && cp -r romfs "$out/run/romfs"
 cd "$out/run" && rm -rf screenshots && SDL_VIDEODRIVER=offscreen ../AI1Emu-Preview --capture && ls screenshots

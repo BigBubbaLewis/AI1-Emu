@@ -1,0 +1,25 @@
+Dekopon - Nintendo 3DS emulator for Nintendo Switch (cores/dekopon.nro)
+
+AI1 Emu distributes the unmodified upstream release binary:
+  Release:  v3.0.0-RC1 (prerelease), published 2026-09-19
+  Binary:   https://github.com/PalindromicBreadLoaf/dekopon/releases/download/v3.0.0-RC1/dekopon.nro
+  SHA-256:  540809c627371e4ffa80a0364cb9a7f20128ebf0df69febbc16d99d646644175
+  Source:   https://github.com/PalindromicBreadLoaf/dekopon (tag v3.0.0-RC1, master)
+            Source revision inspected for this integration:
+            dfba28f5e5342310c1ccff5963363be8512862f6
+
+Dekopon is based on Azahar (https://azahar-emu.org), the continuation of Citra.
+It is licensed under the GNU General Public License, version 2 or later
+(GPL-2.0-or-later). Its graphics driver, NXVK, is a Mesa/NVK fork whose new files
+are GPL-2.0-or-later; upstream Mesa code keeps its own licences.
+
+The complete corresponding source for this binary is available from the upstream
+repository above, including all submodules (git clone --recursive). If that source
+ever becomes unavailable, the AI1 Emu maintainers will provide it on request for
+three years from distribution, as GPL-2.0 section 3 requires.
+
+AI1 Emu's own code is not linked with Dekopon: AI1 Emu starts dekopon.nro as a
+separate program and passes it the game file path.
+
+No 3DS system files, keys, firmware or games are included. Use decrypted dumps
+of games you own.

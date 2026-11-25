@@ -2,9 +2,9 @@
 
 A controller-and-touch Nintendo Switch homebrew frontend for your own retro game collection.
 
-**Preview development:** These are authentic shared-renderer Windows captures with sample entries and simulated game-session callbacks. They demonstrate the interface, not Switch gameplay performance. Current development source identifies v0.5.3; the release-readiness update is being tested.
+**Preview development:** These are authentic shared-renderer Windows captures with sample entries and simulated game-session callbacks. They demonstrate the interface, not Switch gameplay performance. v0.5.4 Preview includes the shared-menu cheat downloader and reliability fixes. This release still needs physical Switch regression testing.
 
-[Current downloads](https://ai1emu-updates.freegamez.workers.dev/) · [Source repository](https://github.com/BigBubbaLewis/AI1-Emu) · [Issue tracker](https://github.com/BigBubbaLewis/AI1-Emu/issues)
+[Download v0.5.4 Preview](https://github.com/BigBubbaLewis/AI1-Emu/releases/tag/v0.5.4-preview) · [Other downloads](https://ai1emu-updates.freegamez.workers.dev/) · [Source repository](https://github.com/BigBubbaLewis/AI1-Emu) · [Issue tracker](https://github.com/BigBubbaLewis/AI1-Emu/issues)
 
 ## A library that feels like yours
 

@@ -28,11 +28,21 @@ bool N64Video::present(unsigned w,unsigned h,bool bottomLeft,float aspect){
  BindFramebuffer(GL_READ_FRAMEBUFFER,fbo);BindFramebuffer(GL_DRAW_FRAMEBUFFER,0);glDisable(GL_SCISSOR_TEST);glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);glClearColor(0,0,0,1);glClear(GL_COLOR_BUFFER_BIT);
  int screenW=1280,screenH=720;SDL_GL_GetDrawableSize(window,&screenW,&screenH);if(!(aspect>0))aspect=float(w)/h;
  int outW=std::min(screenW,int(screenH*aspect)),outH=std::min(screenH,int(outW/aspect)),x=(screenW-outW)/2,y=(screenH-outH)/2;
+ if(stretch&&!(w==1280&&h==720)){outW=screenW;outH=screenH;x=y=0;}
+ if(!(w==1280&&h==720&&!bottomLeft)){lastW=w;lastH=h;lastBottomLeft=bottomLeft;}
  BlitFramebuffer(0,bottomLeft?0:int(h),int(w),bottomLeft?int(h):0,x,y,x+outW,y+outH,GL_COLOR_BUFFER_BIT,GL_NEAREST);
  BindFramebuffer(GL_READ_FRAMEBUFFER,read);BindFramebuffer(GL_DRAW_FRAMEBUFFER,draw);glClearColor(clear[0],clear[1],clear[2],clear[3]);glColorMask(mask[0],mask[1],mask[2],mask[3]);if(scissor)glEnable(GL_SCISSOR_TEST);
  SDL_GL_SwapWindow(window);return true;
 }
 void N64Video::status(const char* message){if(!statusRenderer)return;coreStatus(statusRenderer,message);glBindTexture(GL_TEXTURE_2D,color);glPixelStorei(GL_UNPACK_ALIGNMENT,4);glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1280,720,GL_BGRA,GL_UNSIGNED_BYTE,statusSurface->pixels);glBindTexture(GL_TEXTURE_2D,0);present(1280,720,false,16.f/9.f);}
+void N64Video::showOverlay(){if(!statusRenderer)return;glBindTexture(GL_TEXTURE_2D,color);glPixelStorei(GL_UNPACK_ALIGNMENT,4);glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1280,720,GL_BGRA,GL_UNSIGNED_BYTE,statusSurface->pixels);glBindTexture(GL_TEXTURE_2D,0);bool keep=stretch;stretch=false;present(1280,720,false,16.f/9.f);stretch=keep;}
+bool N64Video::grab(std::vector<Uint32>& argb,int& w,int& h){
+ if(!context||!lastW||!lastH)return false;w=int(lastW);h=int(lastH);std::vector<Uint32> rgba(size_t(w)*h);
+ GLint read=0;glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING,&read);BindFramebuffer(GL_READ_FRAMEBUFFER,fbo);glPixelStorei(GL_PACK_ALIGNMENT,4);glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE,rgba.data());BindFramebuffer(GL_READ_FRAMEBUFFER,read);
+ argb.resize(rgba.size());
+ for(int y=0;y<h;++y){int src=lastBottomLeft?h-1-y:y;for(int x=0;x<w;++x){Uint32 p=rgba[size_t(src)*w+x];Uint32 r=p&0xff,g=(p>>8)&0xff,b=(p>>16)&0xff;argb[size_t(y)*w+x]=0xff000000u|(r<<16)|(g<<8)|b;}}
+ return true;
+}
 void N64Video::close(){
  if(context){if(depth&&DeleteRenderbuffers)DeleteRenderbuffers(1,&depth);if(color)glDeleteTextures(1,&color);if(fbo&&DeleteFramebuffers)DeleteFramebuffers(1,&fbo);}
  fbo=color=depth=0;if(statusRenderer)SDL_DestroyRenderer(statusRenderer);if(statusSurface)SDL_FreeSurface(statusSurface);statusRenderer=nullptr;statusSurface=nullptr;

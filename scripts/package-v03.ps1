@@ -18,12 +18,12 @@ foreach($source in $binaries.Keys){
  Copy-Item -LiteralPath $source -Destination (Join-Path $app $binaries[$source])
  $hashes+=((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant()+'  switch/ai1emu/'+$binaries[$source])
 }
-$mainInputs=@('main.cpp','legacy_migration.cpp','legacy_migration.h','library_ui.cpp','library_ui.h','library_touch.cpp','game_database.cpp','game_database.h','platform_library.cpp','platform_library.h','online_updater.cpp','online_updater.h','app_version.h','runtime_paths.h') | ForEach-Object {Get-Item (Join-Path 'source' $_)}
+$mainInputs=@('main.cpp','legacy_migration.cpp','legacy_migration.h','library_ui.cpp','library_ui.h','ui_kit.cpp','ui_kit.h','app_data.cpp','app_data.h','game_session.cpp','game_session.h','keyboard.h','game_database.cpp','game_database.h','platform_library.cpp','platform_library.h','online_updater.cpp','online_updater.h','app_version.h','runtime_paths.h') | ForEach-Object {Get-Item (Join-Path 'source' $_)}
 $newest=($mainInputs | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
 if((Get-Item AI1Emu.nro).LastWriteTime -lt $newest){throw 'Main NRO predates a source change. Rebuild first.'}
-$coreNewest=(@('core_runner.cpp','core_status.h','dual_screen.h') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+$coreNewest=(@('core_runner.cpp','core_status.h','dual_screen.h','game_session.cpp','game_session.h','ui_kit.cpp','app_data.cpp') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
 foreach($core in Get-ChildItem build/switch/cores -Filter '*.nro' | Where-Object {$_.Name -notin @('mupen64plus-next.nro','melonds.nro')}){if($core.LastWriteTime -lt $coreNewest){throw "Core predates a frontend source change: $($core.Name)"}}
-$n64Newest=(@('n64_runner.cpp','n64_video.cpp','n64_video.h','platform_library.cpp','platform_library.h') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+$n64Newest=(@('n64_runner.cpp','n64_video.cpp','n64_video.h','platform_library.cpp','platform_library.h','game_session.cpp','ui_kit.cpp','app_data.cpp') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
 if((Get-Item build/switch/cores/mupen64plus-next.nro).LastWriteTime -lt $n64Newest){throw 'N64 runner needs rebuilding'}
 Copy-Item vendor/mupen64plus-next/LICENSE "$app/licenses/Mupen64Plus-Next-GPL-2.0.txt"
 Copy-Item docs/V0.3.3-N64.md "$stage/N64-README.md"
@@ -31,9 +31,11 @@ Copy-Item docs/V0.3.4-FOLDERS.md "$stage/AUTOMATIC-FOLDERS.md"
 Copy-Item docs/V0.3.5-FIXES.md "$stage/V0.3.5-FIXES.md"
 Copy-Item docs/V0.4.0-UI.md "$stage/V0.4.0-UI.md"
 Copy-Item docs/V0.4.0-INTEGRATION.md "$stage/V0.4.0-INTEGRATION.md"
-$dsNewest=(@('ds_runner.cpp','ds_audio.h','core_status.h','dual_screen.h','platform_library.cpp','platform_library.h') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+Copy-Item docs/V0.5.0.md "$stage/V0.5.0-WHATS-NEW.md"
+$dsNewest=(@('ds_runner.cpp','ds_audio.h','core_status.h','dual_screen.h','platform_library.cpp','platform_library.h','game_session.cpp','ui_kit.cpp','app_data.cpp') | ForEach-Object {Get-Item (Join-Path 'source' $_)} | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
 if((Get-Item build/switch/cores/melonds.nro).LastWriteTime -lt $dsNewest){throw 'DS runner needs rebuilding'}
 [IO.File]::WriteAllText((Join-Path $app 'cores/melonds-audio.version'),"1`n")
+[IO.File]::WriteAllText((Join-Path $app 'cores/cores.version'),"$releaseVersion`n")
 $hashes | Set-Content "$stage/SHA256SUMS.txt" -Encoding ascii
 Copy-Item tools/AI1Emu-Automatic-Covers-DBI.cmd,tools/AI1Emu-Prepare-Artwork.cmd $pc
 @'

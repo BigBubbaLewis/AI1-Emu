@@ -15,7 +15,7 @@ const std::vector<PlatformInfo>& platforms(){static const std::vector<PlatformIn
  {Platform::GBA,"gba","Game Boy Advance","GBA",""},{Platform::GB,"gb","Game Boy","GB",""},{Platform::GBC,"gbc","Game Boy Color","GBC",""},
  {Platform::NES,"nes","Nintendo Entertainment System","NES","fceumm.nro"},{Platform::SNES,"snes","Super Nintendo","SNES","snes9x.nro"},
  {Platform::Genesis,"genesis","Sega Genesis / Mega Drive","Genesis","genesis-plus-gx.nro"},{Platform::MasterSystem,"sms","Sega Master System","SMS","genesis-plus-gx.nro"},{Platform::GameGear,"gg","Sega Game Gear","GG","genesis-plus-gx.nro"},
- {Platform::DS,"nds","Nintendo DS","DS","melonds.nro"},{Platform::DSi,"dsi","Nintendo DSi (experimental)","DSi","melonds.nro"},{Platform::N64,"n64","Nintendo 64 (experimental)","N64","mupen64plus-next.nro"}};return entries;}
+ {Platform::DS,"nds","Nintendo DS","DS","melonds.nro"},{Platform::DSi,"dsi","Nintendo DSi (experimental)","DSi","melonds.nro"},{Platform::N64,"n64","Nintendo 64 (experimental)","N64","mupen64plus-next.nro"},{Platform::N3DS,"3ds","Nintendo 3DS (experimental)","3DS","dekopon.nro"}};return entries;}
 const PlatformInfo& platformInfo(Platform p){for(auto& info:platforms())if(info.id==p)return info;static const PlatformInfo unknown{Platform::Unknown,"unknown","Unknown platform","?",""};return unknown;}
 static std::string lower(std::string text){std::transform(text.begin(),text.end(),text.begin(),[](unsigned char c){return char(std::tolower(c));});return text;}
 static Platform detectUncached(const std::string& path){
@@ -28,6 +28,8 @@ static Platform detectUncached(const std::string& path){
  if(ext==".bin"){std::ifstream f(path,std::ios::binary);char magic[4]{};f.seekg(0x100);f.read(magic,4);if(folder=="genesis"||folder=="megadrive"||std::string(magic,4)=="SEGA")return Platform::Genesis;}
  if(ext==".z64"||ext==".v64"||ext==".n64")return Platform::N64;
  if(ext==".dsi")return Platform::DSi;
+ // 3DS: decrypted cartridge dumps (.3ds/.cci) and executables (.cxi). CIA files are installers, not games to launch.
+ if(ext==".3ds"||ext==".cci"||ext==".cxi"||ext==".zcci"||ext==".zcxi")return Platform::N3DS;
  if(ext==".nds"){if(folder=="dsi")return Platform::DSi;std::ifstream f(path,std::ios::binary);unsigned char unit=0;f.seekg(0x12);f.read((char*)&unit,1);return f&&unit==3?Platform::DSi:Platform::DS;}
  return Platform::Unknown;
 }
@@ -78,3 +80,4 @@ std::string gameSavePrefix(const std::string& root,const std::string& game){
  return root+"saves/"+platformInfo(p).slug+"/"+file+"."+suffix.str();
 }
 bool isDualScreen(Platform p){return p==Platform::DS||p==Platform::DSi;}
+bool needsFullMemory(Platform p){return isDualScreen(p)||p==Platform::N64||p==Platform::N3DS;}

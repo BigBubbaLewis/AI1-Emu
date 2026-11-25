@@ -14,7 +14,9 @@ struct DSAudioQueue {
  void reset(){if(device){SDL_PauseAudioDevice(device,1);SDL_ClearQueuedAudio(device);}playing=false;}
  bool push(const int16_t* data,size_t frames,bool(*abort)()=nullptr){
   if(!device||!frames)return true;auto queued=SDL_GetQueuedAudioSize(device);auto target=dsAudioTargetBytes(rate);
-  if(playing&&!queued){SDL_PauseAudioDevice(device,1);playing=false;++underruns;}
+  // After startup keep the device running: refilling a full cushion after every
+  // underrun would deliberately mute another 96 ms of otherwise available audio.
+  if(playing&&!queued)++underruns;
   if(queued>target*2){++waits;while(SDL_GetQueuedAudioSize(device)>target*2){if(abort&&abort())return false;SDL_Delay(1);}}
   if(SDL_QueueAudio(device,data,frames*4)!=0)return false;
   if(!playing&&SDL_GetQueuedAudioSize(device)>=target){SDL_PauseAudioDevice(device,0);playing=true;}return true;
