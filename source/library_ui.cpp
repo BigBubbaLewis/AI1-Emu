@@ -223,6 +223,8 @@ std::string LibraryUI::coverFor(const std::string& p) {
  if (platform == Platform::GBA) for (const char* ext : {".png", ".jpg", ".jpeg"}) if (fs::exists(base + "covers/" + stem(p) + ext)) return paths[p] = base + "covers/" + stem(p);
  auto name = gameTitle(p);
  for (char& c : name) if (std::string("&*/:`<>?\\|").find(c) != std::string::npos) c = '_';
+ // Your own cover may also be named after the game's title instead of its file name.
+ if (name != stem(p)) for (const char* ext : {".png", ".jpg", ".jpeg"}) if (fs::exists(base + "covers/" + slug + "/" + name + ext)) return paths[p] = base + "covers/" + slug + "/" + name;
  if (platform == Platform::GBA && name == "Metroid - Zero Mission (USA, Australia)") name = "Metroid - Zero Mission (USA)";
  if (platform == Platform::GBA && cachedImageAvailable(base + "artwork-cache/" + name)) return paths[p] = base + "artwork-cache/" + name;
  if ((platform == Platform::GB || platform == Platform::GBC) && !cachedImageAvailable(base + "artwork-cache/" + slug + "/" + name)) {

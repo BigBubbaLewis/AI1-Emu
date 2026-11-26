@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <cassert>
+#include <cstring>
 #include <cstdlib>
 #include <chrono>
 #include <iostream>
@@ -51,6 +52,27 @@ int main() {
   ui.setGames({rom, rom});
   ui.draw(false);
   assert(ui.mapOwned.size() == 1);
+  // ROM hacks keep the original game code in their header (here Emerald's BPEE), so the
+  // code alone must not rename them; a file named like the original still resolves.
+  {
+   fs::create_directories(root + "/roms/gba");
+   auto gba = [&](const std::string& file) {
+    std::vector<char> h(0x200, 0);
+    std::memcpy(h.data() + 0xAC, "BPEE", 4);
+    std::ofstream(root + "/roms/gba/" + file, std::ios::binary).write(h.data(), h.size());
+    return root + "/roms/gba/" + file;
+   };
+   auto hack = gba("Pokemon Emerald Rogue.gba"), scene = gba("Pokemon Emerald (U).gba");
+   assert(detectPlatform(hack) == Platform::GBA);
+   assert(gameTitle(hack) == "Pokemon Emerald Rogue");
+   assert(gameTitle(scene) == "Pokemon - Emerald Version (USA, Europe)");
+   // Own covers: named like the ROM file, or like the game's title.
+   fs::create_directories(root + "/covers/gba");
+   fs::copy_file("romfs/app-icon.png", root + "/covers/gba/Pokemon Emerald Rogue.png");
+   fs::copy_file("romfs/app-icon.png", root + "/covers/gba/Pokemon - Emerald Version (USA, Europe).png");
+   assert(ui.coverFor(hack) == root + "/covers/gba/Pokemon Emerald Rogue");
+   assert(ui.coverFor(scene) == root + "/covers/gba/Pokemon - Emerald Version (USA, Europe)");
+  }
   // Missing covers: a 3DS game is looked up on libretro-thumbnails by its file name;
   // the GB game already has its cover; a "no cover online" note stops further requests.
   {
