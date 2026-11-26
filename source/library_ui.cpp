@@ -225,6 +225,28 @@ std::string LibraryUI::coverFor(const std::string& p) {
  for (char& c : name) if (std::string("&*/:`<>?\\|").find(c) != std::string::npos) c = '_';
  // Your own cover may also be named after the game's title instead of its file name.
  if (name != stem(p)) for (const char* ext : {".png", ".jpg", ".jpeg"}) if (fs::exists(base + "covers/" + slug + "/" + name + ext)) return paths[p] = base + "covers/" + slug + "/" + name;
+ // Or a similar name: tags, case, accents, punctuation and version numbers are ignored
+ // (see looseNameKey), so "Pokemon_Unbound_v2.1.gba" finds "Pokémon Unbound.png".
+ {
+  static std::map<std::string, std::vector<std::string>> folders; // folder -> picture names (no extension)
+  std::vector<std::string> dirs = {base + "covers/" + slug + "/"};
+  if (platform == Platform::GBA) dirs.push_back(base + "covers/");
+  for (auto& dir : dirs) {
+   auto it = folders.find(dir);
+   if (it == folders.end()) {
+    std::vector<std::string> list;
+    std::error_code ec;
+    for (fs::directory_iterator d(dir, ec), end; !ec && d != end; d.increment(ec)) {
+     if (!d->is_regular_file(ec)) continue;
+     auto ext = lower(d->path().extension().string());
+     if (ext == ".png" || ext == ".jpg" || ext == ".jpeg") list.push_back(d->path().stem().string());
+    }
+    it = folders.emplace(dir, std::move(list)).first;
+   }
+   int found = matchCover({stem(p), gameTitle(p)}, it->second);
+   if (found >= 0) return paths[p] = dir + it->second[size_t(found)];
+  }
+ }
  if (platform == Platform::GBA && name == "Metroid - Zero Mission (USA, Australia)") name = "Metroid - Zero Mission (USA)";
  if (platform == Platform::GBA && cachedImageAvailable(base + "artwork-cache/" + name)) return paths[p] = base + "artwork-cache/" + name;
  if ((platform == Platform::GB || platform == Platform::GBC) && !cachedImageAvailable(base + "artwork-cache/" + slug + "/" + name)) {
@@ -983,7 +1005,12 @@ void LibraryUI::drawLibrary() {
   drawCover(g, sx + 22, sy + 22, sw2 - 44, 116, p.radius(10), t.surf, false);
   int lines = p.paragraph(ui::prettyTitle(gameTitle(g)), sx + 22, sy + 152, 21, t.text, sw2 - 44, 26, 2, ui::Heavy);
   int ky = sy + 152 + lines * 26 + 2;
-  p.text(platformInfo(detectPlatform(g)).name, sx + 22, ky, 15, t.muted, ui::Medium, sw2 - 44);
+  {
+   auto from = gamePatchedFrom(g);
+   std::string sub = platformInfo(detectPlatform(g)).name;
+   if (!from.empty()) sub = "ROM hack of " + shortTitle(from);
+   p.text(sub, sx + 22, ky, 15, t.muted, ui::Medium, sw2 - 44);
+  }
   auto rec = history.count(g) ? history[g] : PlayRecord{};
   auto& info = infoFor(g);
   std::vector<std::pair<std::string, std::string>> kv = {

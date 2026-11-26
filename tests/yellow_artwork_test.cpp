@@ -72,6 +72,31 @@ int main() {
    fs::copy_file("romfs/app-icon.png", root + "/covers/gba/Pokemon - Emerald Version (USA, Europe).png");
    assert(ui.coverFor(hack) == root + "/covers/gba/Pokemon Emerald Rogue");
    assert(ui.coverFor(scene) == root + "/covers/gba/Pokemon - Emerald Version (USA, Europe)");
+   // Patched-game detection: the hack is recognised as based on Emerald, the original is not a hack.
+   assert(gamePatchedFrom(hack) == "Pokemon - Emerald Version (USA, Europe)");
+   assert(gamePatchedFrom(scene).empty());
+   // Loose names: tags, case, accents, punctuation and versions ignored; different games kept apart.
+   assert(looseNameKey("Pokemon_Unbound_v2.1") == looseNameKey("Pok\xC3\xA9mon Unbound (Hack)"));
+   assert(looseNameKey("POKEMON - UNBOUND [Beta 3]") == "pokemonunbound");
+   assert(looseNameKey("Pokemon Emerald") != looseNameKey("Pokemon Emerald Rogue"));
+   // A hack with a versioned file name finds a cover with a similar name.
+   std::vector<char> h(0x200, 0);
+   std::memcpy(h.data() + 0xAC, "BPRE", 4);
+   auto unbound = root + "/roms/gba/Pokemon_Unbound_v2.1.gba";
+   std::ofstream(unbound, std::ios::binary).write(h.data(), h.size());
+   fs::copy_file("romfs/app-icon.png", root + "/covers/gba/Pok\xC3\xA9mon Unbound.png");
+   assert(gameTitle(unbound) == "Pokemon_Unbound_v2.1");
+   assert(gamePatchedFrom(unbound) == "Pokemon - FireRed Version (USA, Europe)");
+   assert(ui.coverFor(unbound) == root + "/covers/gba/Pok\xC3\xA9mon Unbound");
+   // Cover matching beyond exact names: a 2-letter typo, a cover named with only part of the
+   // game's name, and no false match between related but different games.
+   const std::vector<std::string> covers = {"Pokemon Amythest", "Pokemon Sword and Shield", "Pokemon Emerald Azure", "Pokemon Phoenix Red"};
+   assert(matchCover({"Pokemon Amethyst (v1.4.3)"}, covers) == 0);
+   assert(matchCover({"Sword and Shield Ultimate Plus (1.2.1.2)"}, covers) == 1);
+   assert(matchCover({"Pokemon Emerald Azure (0.6)"}, covers) == 2);
+   assert(matchCover({"Pokemon - Emerald Version (USA, Europe)"}, covers) == -1);
+   assert(matchCover({"Pokemon - FireRed Version (USA, Europe)"}, covers) == -1);
+   assert(matchCover({"Pokemon Crestfall (2.1.0)"}, covers) == -1);
   }
   // Missing covers: a 3DS game is looked up on libretro-thumbnails by its file name;
   // the GB game already has its cover; a "no cover online" note stops further requests.
