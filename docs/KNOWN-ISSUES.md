@@ -1,6 +1,6 @@
 # Known issues
 
-Applies to **test build 0.5.13** (private test channel), last updated 2026-11-25.
+Applies to **test build 0.5.17** (private test channel), last updated 2026-11-25.
 The public downloads are still stable 0.3.5 and UI preview 0.4.0; their issues are in
 their own release notes.
 
@@ -11,6 +11,26 @@ means nobody has checked it on a Switch yet.
 
 ## All consoles
 
+- **Game saves in 0.5.16 and earlier: only the first save of a game reached the save
+  file.** Saves were written to `<save>.tmp` and renamed over the save, which the Switch
+  refuses when the save already exists, so later progress stayed in the `.tmp` file and
+  "Game save could not be written" appeared (reported; save states were not affected).
+  0.5.17 replaces saves safely (the old one is kept as `.previous`) and, when loading,
+  uses a `.tmp` that is newer than the save. Fixed in the code and host-tested; **not yet
+  confirmed on a Switch**. Do not delete `.tmp` files in `saves/` before updating.
+- **Starting a game** shows a "Starting..." card at once (0.5.16). Consoles other than
+  GBA/GB then hand over to a separate emulator program, and the screen is blank while
+  the Switch loads it (seconds for large emulators such as Dekopon). Not measured yet;
+  launch steps are timed in `logs/app.log` (previous run in `app.old.log`).
+- **ROM hacks** (0.5.14+) are recognised when the header's game code belongs to a known
+  release but the file name does not match that release; the details panel shows the
+  release it is based on. A hack named exactly like the original release is treated as
+  the original.
+- **Your own covers** (0.5.15+) are matched to games by exact file name or title, then by a
+  loose name (case, accents, brackets and version numbers ignored), then allowing a typo of
+  up to 2 letters, then by partial names when only one cover fits. A wrong match is
+  possible in rare cases; naming the cover exactly like the ROM file always wins.
+  Pictures whose shape differs from the tile are shown whole over a dimmed copy (0.5.17).
 - **Full-memory mode is required for DS, DSi, N64 and 3DS.** Open AI1 Emu as an
   application (a forwarder, or hold R while starting a game), not from the album.
 - **Covers are matched by file name.** Missing covers are downloaded from
@@ -29,8 +49,8 @@ means nobody has checked it on a Switch yet.
   writes a sys-clk profile with CPU 1785 MHz and memory 1600 MHz. These are within
   Nintendo's own limits but use more battery and run warmer. Its effect is **not yet
   measured** in a controlled before/after test.
-- **Screenshots in the README** are v0.5.0 captures from the Windows preview. Later
-  layout changes (console filter row, downloaded covers) are not shown.
+- **Screenshots in the README** are 0.5.17 captures from the Windows preview with
+  placeholder homebrew titles; they show no cover art and no Switch hardware.
 
 ## Nintendo 3DS (Dekopon v3.0.0-RC1, unmodified release)
 

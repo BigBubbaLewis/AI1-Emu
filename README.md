@@ -10,20 +10,20 @@ AI1 Emu brings a Home screen that picks up where you left off, a searchable libr
 
 ## See the interface
 
-<img src="docs/images/home.png" alt="Actual v0.5.0 Home screen from the Windows UI preview" width="100%">
+<img src="docs/images/home.png" alt="Actual v0.5.17 Home screen from the Windows UI preview" width="100%">
 
 <details><summary>Library, in-game menu, themes and controls</summary>
 
-<img src="docs/images/library.png" alt="Actual v0.5.0 Library screen from the Windows UI preview" width="100%">
-<img src="docs/images/game-menu.png" alt="Actual v0.5.0 in-game menu, Save state page, from the Windows UI preview" width="100%">
-<img src="docs/images/game-menu-speed.png" alt="Actual v0.5.0 in-game menu, Speed page, from the Windows UI preview" width="100%">
-<img src="docs/images/settings.png" alt="Actual v0.5.0 Themes settings from the Windows UI preview" width="100%">
-<img src="docs/images/home-black.png" alt="Actual v0.5.0 Home screen in the Black theme from the Windows UI preview" width="100%">
-<img src="docs/images/controls.png" alt="Actual v0.5.0 Controls screen from the Windows UI preview" width="100%">
+<img src="docs/images/library.png" alt="Actual v0.5.17 Library screen from the Windows UI preview" width="100%">
+<img src="docs/images/game-menu.png" alt="Actual v0.5.17 in-game menu, Save state page, from the Windows UI preview" width="100%">
+<img src="docs/images/game-menu-speed.png" alt="Actual v0.5.17 in-game menu, Speed page, from the Windows UI preview" width="100%">
+<img src="docs/images/settings.png" alt="Actual v0.5.17 Themes settings from the Windows UI preview" width="100%">
+<img src="docs/images/home-black.png" alt="Actual v0.5.17 Home screen in the Black theme from the Windows UI preview" width="100%">
+<img src="docs/images/controls.png" alt="Actual v0.5.17 Controls screen from the Windows UI preview" width="100%">
 
 </details>
 
-These v0.5.0 captures come from the Windows preview using the app's shared SDL2 renderer, with free homebrew titles and no cover art. The preview does not emulate games: the in-game picture is generated. v0.5.0 is built and host-tested but not yet released or tested on a Switch; see [v0.5.0 notes](docs/V0.5.0.md).
+These captures come from test build 0.5.17 running in the Windows preview (captured 2026-11-25 with `AI1Emu-Preview.exe --capture`), which uses the app's shared SDL2 drawing code. The library holds placeholder files named after free homebrew titles, with no cover art; play times are sample data. The preview does not emulate games: the in-game picture is generated. See the [v0.5 notes](docs/V0.5.0.md) and [known issues](docs/KNOWN-ISSUES.md).
 
 ## Download
 
@@ -35,7 +35,7 @@ These v0.5.0 captures come from the Windows preview using the app's shared SDL2 
 
 Use the complete package for a fresh installation. The standard in-app update channel remains on 0.3.5. Downloads are currently hosted on Cloudflare.
 
-The v0.5 builds described below (latest: test build 0.5.13) are on a private test channel and are not a public release yet. See [known issues](docs/KNOWN-ISSUES.md).
+The v0.5 builds described below (latest: test build 0.5.17) are on a private test channel and are not a public release yet. See [known issues](docs/KNOWN-ISSUES.md).
 
 ## Install
 
