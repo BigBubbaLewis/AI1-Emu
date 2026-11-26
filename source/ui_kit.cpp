@@ -314,14 +314,29 @@ void Painter::maskCorners(int x, int y, int w, int h, int rad, SDL_Color under) 
  for (int i = 0; i < 4; ++i) SDL_RenderCopyEx(r, inverse, nullptr, &corners[i], 0, nullptr, flips[i]);
 }
 
-void Painter::picture(SDL_Texture* t, int tw, int th, int x, int y, int w, int h, int rad, SDL_Color under) {
+void Painter::picture(SDL_Texture* t, int tw, int th, int x, int y, int w, int h, int rad, SDL_Color under, bool whole) {
  if (!t || tw <= 0 || th <= 0 || w <= 0 || h <= 0) return;
  float scale = std::max(float(w) / tw, float(h) / th);
  float sw = w / scale, sh = h / scale;
  SDL_Rect src{int((tw - sw) / 2), int((th - sh) / 2), std::max(1, int(sw)), std::max(1, int(sh))};
  SDL_Rect dst{x, y, w, h};
  SDL_SetTextureScaleMode(t, SDL_ScaleModeLinear);
- SDL_RenderCopy(r, t, &src, &dst);
+ const float picture = float(tw) / th, box = float(w) / h;
+ if (!whole || std::fabs(picture / box - 1.f) <= 0.08f) {
+  SDL_RenderCopy(r, t, &src, &dst); // close enough in shape: fill the box
+ } else {
+  // Whole picture, never cropped. The space around it shows a dimmed, enlarged copy of the
+  // same picture instead of empty bars.
+  Uint8 cr, cg, cb;
+  SDL_GetTextureColorMod(t, &cr, &cg, &cb);
+  SDL_SetTextureColorMod(t, 70, 70, 76);
+  SDL_RenderCopy(r, t, &src, &dst);
+  SDL_SetTextureColorMod(t, cr, cg, cb);
+  float fit = std::min(float(w) / tw, float(h) / th);
+  int fw = std::max(1, int(tw * fit + .5f)), fh = std::max(1, int(th * fit + .5f));
+  SDL_Rect whole{x + (w - fw) / 2, y + (h - fh) / 2, fw, fh};
+  SDL_RenderCopy(r, t, nullptr, &whole);
+ }
  maskCorners(x, y, w, h, rad, under);
 }
 

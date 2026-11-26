@@ -666,7 +666,7 @@ void LibraryUI::drawBackground() {
  if (!settings.wallpaper) return;
  if (!wallpaperTried) { wallpaperTried = true; wallpaper = loadImage(wallpaperPath(root), 1280); }
  if (!wallpaper.texture) return;
- paint.picture(wallpaper.texture, wallpaper.w, wallpaper.h, 0, 0, 1280, 720, 0, paint.theme.bg);
+ paint.picture(wallpaper.texture, wallpaper.w, wallpaper.h, 0, 0, 1280, 720, 0, paint.theme.bg, false);
  paint.fill(0, 0, 1280, 720, ui::alpha(paint.theme.bg, 150));
 }
 

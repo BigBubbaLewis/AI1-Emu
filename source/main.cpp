@@ -7,6 +7,7 @@
 #include "library_ui.h"
 #include "game_session.h"
 #include "keyboard.h"
+#include "safe_file.h"
 #include "runtime_paths.h"
 #include "online_updater.h"
 #include "game_database.h"
@@ -123,13 +124,9 @@ static int16_t input(unsigned port, unsigned device, unsigned, unsigned id) {
  return id < 12 && (held & keys[id]) ? 1 : 0;
 }
 static std::vector<char> read(const std::string& p) { std::ifstream f(p, std::ios::binary); return {std::istreambuf_iterator<char>(f), {}}; }
-static bool write(const std::string& p, const void* d, size_t n) {
- std::ofstream f(p + ".tmp", std::ios::binary);
- f.write((const char*)d, std::streamsize(n));
- f.close();
- if (!f) return false;
- return std::rename((p + ".tmp").c_str(), p.c_str()) == 0;
-}
+// Writes to <p>.tmp, then swaps it in (keeping the old file as <p>.previous). A plain rename
+// onto an existing file fails on the Switch, which left every save after the first in .tmp.
+static bool write(const std::string& p, const void* d, size_t n) { return safeWriteFile(p, d, n); }
 
 int main() {
  { std::error_code ec; fs::create_directories("sdmc:/switch/ai1emu/logs", ec); }
@@ -297,7 +294,7 @@ int main() {
    gamePath = path;
    save = gameSavePrefix(root, path);
    fs::create_directories(fs::path(save).parent_path());
-   auto ram = read(save + ".sav");
+   auto ram = read(newestSave(save + ".sav"));
    auto n = retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);
    if (!ram.empty() && ram.size() <= n && retro_get_memory_data(RETRO_MEMORY_SAVE_RAM)) memcpy(retro_get_memory_data(RETRO_MEMORY_SAVE_RAM), ram.data(), ram.size());
    retro_system_av_info av{};

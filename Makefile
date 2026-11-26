@@ -6,7 +6,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 TARGET := AI1Emu
 APP_TITLE := AI1 Emu
 APP_AUTHOR := AI1 Emu
-APP_VERSION := 0.5.16
+APP_VERSION := 0.5.17
 PORTLIBS := $(DEVKITPRO)/portlibs/switch
 OUT := build/switch
 SOURCES := main library_ui ui_kit app_data game_session online_cheats game_database platform_library legacy_migration online_updater network cover_fetch sysclk_profile

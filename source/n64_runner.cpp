@@ -4,9 +4,13 @@
 #include <SDL.h>
 #include <libretro.h>
 #include "platform_library.h"
+#include "safe_file.h"
 #include "n64_video.h"
+#include "safe_file.h"
 #include "game_session.h"
+#include "safe_file.h"
 #include "cpu_boost.h"
+#include "safe_file.h"
 #include <memory>
 
 #include <algorithm>
@@ -84,7 +88,8 @@ static std::vector<char> readRom(const std::string& p){
  const unsigned char* bytes=reinterpret_cast<const unsigned char*>(out.data());bool header=(bytes[0]==0x80&&bytes[1]==0x37&&bytes[2]==0x12&&bytes[3]==0x40)||(bytes[0]==0x37&&bytes[1]==0x80&&bytes[2]==0x40&&bytes[3]==0x12)||(bytes[0]==0x40&&bytes[1]==0x12&&bytes[2]==0x37&&bytes[3]==0x80);if(!header){abortError="Invalid N64 cartridge header. Use an uncompressed z64, v64 or n64 file.";return {};}
  logMessage(RETRO_LOG_INFO,"ROM read complete: %zu bytes\n",out.size());return out;
 }
-static bool write(const std::string& p,const void* data,size_t n){std::ofstream f(p+".tmp",std::ios::binary);f.write(static_cast<const char*>(data),n);f.close();return f&&std::rename((p+".tmp").c_str(),p.c_str())==0;}
+// Swap in via safeWriteFile: a plain rename onto an existing save fails on the Switch.
+static bool write(const std::string& p,const void* data,size_t n){return safeWriteFile(p,data,n);}
 static void returnToLibrary(const std::string& message){if(!message.empty()){std::ofstream f(root+"launch-error.txt");f<<message;}envSetNextLoad("sdmc:/switch/ai1emu/AI1Emu.nro","sdmc:/switch/ai1emu/AI1Emu.nro");}
 int main(int argc,char** argv){if(argc<4)return 1;std::string game=argv[1];root=argv[2];platform=static_cast<Platform>(std::atoi(argv[3]));bool resume=argc>4&&std::string(argv[4])=="resume";std::string cover=argc>5?argv[5]:"";prefix=gameSavePrefix(root,game);systemDir=root+"system/"+platformInfo(platform).slug;
  // The core exposes cartridge SRAM and controller pak bytes together.
@@ -102,7 +107,7 @@ int main(int argc,char** argv){if(argc<4)return 1;std::string game=argv[1];root=
  retro_system_info coreInfo{};retro_get_system_info(&coreInfo);std::vector<char> rom;phase("READING ROM");if(!coreInfo.need_fullpath)rom=readRom(game);retro_game_info info{game.c_str(),rom.empty()?nullptr:rom.data(),rom.size(),nullptr};
  phase("LOADING GAME");bool loaded=false;try{loaded=!quit&&abortError.empty()&&(coreInfo.need_fullpath||!rom.empty())&&retro_load_game(&info);}catch(const std::bad_alloc&){abortError="Not enough memory to load this game. Use full-memory application mode.";}catch(const std::exception& e){abortError="Core startup failed. See its log.";logMessage(RETRO_LOG_ERROR,"Exception: %s\n",e.what());}std::string failure;
  if(loaded){if(!hardware.context_reset){abortError="N64 core did not request hardware rendering.";retro_unload_game();loaded=false;}else hardware.context_reset();}
- if(loaded){auto ram=read(prefix+".sav");bool saveCompatible=!fs::exists(prefix+".sav")||(!ram.empty()&&ram.size()==retro_get_memory_size(RETRO_MEMORY_SAVE_RAM));if(!saveCompatible)failure="Existing N64 save has an incompatible size; preserved without overwriting.";size_t n=retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);void* data=retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);if(data&&!ram.empty()&&ram.size()==n)memcpy(data,ram.data(),ram.size());retro_system_av_info av{};retro_get_system_av_info(&av);aspect=av.geometry.aspect_ratio;fps=av.timing.fps>1?av.timing.fps:60;SDL_AudioSpec audioSpec{};audioSpec.freq=int(av.timing.sample_rate);audioSpec.format=AUDIO_S16SYS;audioSpec.channels=2;audioSpec.samples=1024;audio=SDL_OpenAudioDevice(nullptr,0,&audioSpec,nullptr,0);if(audio)SDL_PauseAudioDevice(audio,0);else {failure="N64 audio output could not be opened. See logs/core-n64.log.";logMessage(RETRO_LOG_ERROR,"SDL audio: %s\n",SDL_GetError());}
+ if(loaded){auto ram=read(newestSave(prefix+".sav"));bool saveCompatible=!fs::exists(prefix+".sav")||(!ram.empty()&&ram.size()==retro_get_memory_size(RETRO_MEMORY_SAVE_RAM));if(!saveCompatible)failure="Existing N64 save has an incompatible size; preserved without overwriting.";size_t n=retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);void* data=retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);if(data&&!ram.empty()&&ram.size()==n)memcpy(data,ram.data(),ram.size());retro_system_av_info av{};retro_get_system_av_info(&av);aspect=av.geometry.aspect_ratio;fps=av.timing.fps>1?av.timing.fps:60;SDL_AudioSpec audioSpec{};audioSpec.freq=int(av.timing.sample_rate);audioSpec.format=AUDIO_S16SYS;audioSpec.channels=2;audioSpec.samples=1024;audio=SDL_OpenAudioDevice(nullptr,0,&audioSpec,nullptr,0);if(audio)SDL_PauseAudioDevice(audio,0);else {failure="N64 audio output could not be opened. See logs/core-n64.log.";logMessage(RETRO_LOG_ERROR,"SDL audio: %s\n",SDL_GetError());}
  auto persist=[&]{size_t size=retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);void* ptr=retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);if(saveCompatible&&ptr&&size&&!write(prefix+".sav",ptr,size))failure="Game save write failed. Check free SD space.";};
   CoreHooks hooks;hooks.serializeSize=[]{return retro_serialize_size();};hooks.serialize=[](void* d,size_t s){return retro_serialize(d,s);};hooks.unserialize=[](const void* d,size_t s){return retro_unserialize(d,s);};hooks.reset=[]{retro_reset();};hooks.cheatReset=[]{retro_cheat_reset();};hooks.cheatSet=[](unsigned i,bool on,const char* c){retro_cheat_set(i,on,c);};
  // While the menu is open the GL framebuffer shows the menu, so pictures come from a copy taken when it opened.

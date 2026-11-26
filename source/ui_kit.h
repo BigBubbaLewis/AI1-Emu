@@ -79,8 +79,10 @@ public:
  void icon(Icon id, int cx, int cy, int size, SDL_Color c);
  // Controller button glyph (round or pill); returns its width.
  int button(const std::string& label, int x, int cy, SDL_Color fill, SDL_Color ink);
- // Centre-cropped picture with anti-aliased rounded corners blended against `under`.
- void picture(SDL_Texture* t, int tw, int th, int x, int y, int w, int h, int radius, SDL_Color under);
+ // Picture with anti-aliased rounded corners blended against `under`. Fills the box when its
+ // shape is within 8% of the box's; otherwise shown whole over a dimmed copy of itself.
+ // `whole` false always fills (wallpapers).
+ void picture(SDL_Texture* t, int tw, int th, int x, int y, int w, int h, int radius, SDL_Color under, bool whole = true);
  void maskCorners(int x, int y, int w, int h, int radius, SDL_Color under);
 
  void gradient(int x, int y, int w, int h, SDL_Color top, SDL_Color bottom);

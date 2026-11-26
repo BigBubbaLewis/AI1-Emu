@@ -14,6 +14,18 @@ inline bool safeReplace(const std::string& staged,const std::string& target,int(
  if(renameFile(staged.c_str(),target.c_str())!=0){if(exists)renameFile(backup.c_str(),target.c_str());return false;}
  return true;
 }
+// Saves written by 0.5.15 and earlier went to "<save>.tmp" and were then renamed over the
+// save, which the Switch file system refuses when the save already exists: the newest
+// progress could be left in the .tmp file. Returns the .tmp path when it is newer and not
+// empty, so that progress is loaded (and then written properly).
+inline std::string newestSave(const std::string& path){
+ std::error_code ec;const auto staged=path+".tmp";
+ if(!std::filesystem::is_regular_file(staged,ec)||std::filesystem::file_size(staged,ec)==0||ec)return path;
+ if(!std::filesystem::exists(path,ec))return staged;
+ auto a=std::filesystem::last_write_time(staged,ec);if(ec)return path;
+ auto b=std::filesystem::last_write_time(path,ec);if(ec)return path;
+ return a>b?staged:path;
+}
 inline bool safeWriteFile(const std::string& target,const void* data,size_t size){
  std::error_code ec;const auto parent=std::filesystem::path(target).parent_path();if(!parent.empty())std::filesystem::create_directories(parent,ec);if(ec)return false;
  const auto staged=target+".tmp";FILE* out=std::fopen(staged.c_str(),"wb");if(!out)return false;
