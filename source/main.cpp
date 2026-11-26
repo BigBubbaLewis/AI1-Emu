@@ -259,6 +259,8 @@ int main() {
     if (!fs::exists(corePath)) { ui.toast("This console's emulator is missing. Install the complete package."); return false; }
     if (!envHasNextLoad()) { ui.toast("This loader can't start emulators. Use Homebrew Menu application mode."); return false; }
     if (path.find_first_of("\"\r\n") != std::string::npos || cover.find_first_of("\"\r\n") != std::string::npos) { ui.toast("Rename this game file to remove quotes."); return false; }
+    ui.showLaunching(path);
+    appLog("Launch: " + fs::path(path).filename().string() + " with " + info.core);
     std::string args = corePath + " \"" + path + "\" \"" + root + "\" " + std::to_string(int(platform)) + " " + (resume ? "resume" : "play") + " \"" + cover + "\"";
     if (R_SUCCEEDED(envSetNextLoad(corePath.c_str(), args.c_str()))) {
      // Dekopon (3DS) is the upstream emulator and does not report play time back,
@@ -278,16 +280,20 @@ int main() {
     ui.toast("Could not start this console's emulator.");
     return false;
    }
+   ui.showLaunching(path);
+   appLog("Launch: " + fs::path(path).filename().string() + " in-process");
    ui.stopStorageScan();
    systemDirectory = root + "system/" + info.slug;
    coreSaveDirectory = root + "saves/" + info.slug;
    if (platform == Platform::GBA && fs::exists(root + "gba_bios.bin")) systemDirectory = root;
    rom = read(path);
+   appLog("Launch: ROM read, " + std::to_string(rom.size() / 1024) + " KB");
    retro_game_info gi{};
    gi.path = path.c_str();
    gi.data = rom.data();
    gi.size = rom.size();
    if (!retro_load_game(&gi)) { ui.toast("This game could not be loaded."); return false; }
+   appLog("Launch: game loaded");
    gamePath = path;
    save = gameSavePrefix(root, path);
    fs::create_directories(fs::path(save).parent_path());
@@ -409,6 +415,7 @@ int main() {
    if (libraryFrames < 60 && ++libraryFrames == 1) appLog("First library frame drawn");
   }
  leave:
+  appLog("Leaving the library");
   if (game) stopGame();
   ui.stopStorageScan();
   retro_deinit();
@@ -420,6 +427,7 @@ int main() {
  SDL_DestroyWindow(window);
  SDL_Quit();
  romfsExit();
+ appLog("Shut down; the next program starts now");
  if (installUpdate && !updater.apply()) {
   std::ofstream error("sdmc:/switch/ai1emu/update-error.txt");
   error << "Update could not be installed; the previous app was retained. Retry from Settings.";

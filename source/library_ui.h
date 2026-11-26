@@ -39,6 +39,7 @@ struct LibraryUI {
  Command handlePointer(const SDL_Event& e);
  void draw(bool present = true);
  void toast(const std::string& message);
+ void showLaunching(const std::string& game); // "Starting..." card, presented at once
  void stopStorageScan();
  std::string coverFor(const std::string& game);
  std::string selectedGame() const;

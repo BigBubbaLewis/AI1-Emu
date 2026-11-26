@@ -24,4 +24,12 @@ inline void appLogWrite(const char* mode, const std::string& line) {
 #endif
 }
 inline void appLog(const std::string& line) { appLogWrite("a", line); }
-inline void appLogStart(const std::string& line) { appLogWrite("w", line); }
+// The previous run's log is kept as app.old.log (returning from a game restarts the app,
+// so the launch steps of the last game are found there).
+inline void appLogStart(const std::string& line) {
+#ifdef __SWITCH__
+ std::remove("sdmc:/switch/ai1emu/logs/app.old.log");
+ std::rename(appLogPath(), "sdmc:/switch/ai1emu/logs/app.old.log");
+#endif
+ appLogWrite("w", line);
+}

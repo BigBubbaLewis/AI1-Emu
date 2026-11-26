@@ -727,6 +727,27 @@ void LibraryUI::drawFooter(const std::vector<std::pair<std::string, std::string>
  }
 }
 
+// Shown the moment a game is chosen, before the ROM is read or the emulator starts, so the
+// screen never looks frozen. The frame stays up until the game draws or the app hands over.
+void LibraryUI::showLaunching(const std::string& game) {
+ pumpArt(20);
+ draw(false);
+ auto& p = paint;
+ const auto& t = p.theme;
+ SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_BLEND);
+ p.fill(0, 0, 1280, 720, {0, 0, 0, 150});
+ int w = 560, h = 196, x = 640 - w / 2, y = 262;
+ p.shadow(x, y, w, h, p.radius(22), 3);
+ p.round(x, y, w, h, p.radius(22), t.surf);
+ drawCover(game, x + 28, y + 28, 140, 140, p.radius(14), t.surf, false);
+ int tx = x + 196, tw = w - 196 - 28;
+ p.text("Starting...", tx, y + 34, 16, t.acc, ui::Bold, tw);
+ int lines = p.paragraph(ui::prettyTitle(gameTitle(game)), tx, y + 60, 23, t.text, tw, 28, 2, ui::Heavy);
+ p.text(platformInfo(detectPlatform(game)).name, tx, y + 64 + lines * 28, 15, t.muted, ui::Medium, tw);
+ p.text("This can take a few seconds", tx, y + h - 40, 14, t.muted, ui::Medium, tw);
+ SDL_RenderPresent(r);
+}
+
 void LibraryUI::drawToast() {
  if (SDL_GetTicks64() >= toastUntil || toastText.empty()) return;
  auto& p = paint;
